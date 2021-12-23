@@ -1,7 +1,3 @@
-```{r upset_functions,eval=TRUE}
-
-
-
 
 get_intersects = function(listINPUT,numberOfTopSets){
   # This function finds all combinations of size 1 to length(list)
@@ -110,15 +106,12 @@ tabMyList2table=function(listInput,tab,table2join=NULL){
 }    
 
 
-```
-
-```{r getGenesAsList,eval=TRUE}
 
 # Get the masterList
-masterList <- readRDS(file='masterList_in_vivo.Rds')
+# masterList <- readRDS(file='masterList_in_vivo.Rds')
 # names(masterList)
-masterList <- masterList[1:3]
-names(masterList)
+# masterList <- masterList[1:3]
+# names(masterList)
 
 # GETTING FROM DGE TSVs
 # files2get <- list.files()[grep('d3.*DGE.tsv',list.files())]
@@ -136,76 +129,76 @@ names(masterList)
 # names(list2upset)
 
 # GETTING FROM masterList
-list2upset = NULL
-for(i in 1:length(masterList)){
-  name <- names(masterList)[i]
-  xFiltUp <- list(dplyr::filter(masterList[[i]],FDR<0.05 & logFC>0)$ext_gene)
-  names(xFiltUp) <- paste0(name,'_Up')
-  xFiltDown <- list(dplyr::filter(masterList[[i]],FDR<0.05 & logFC<0)$ext_gene)
-  names(xFiltDown) <- paste0(name,'_Down')
-  list2upset <- c(list2upset,xFiltUp,xFiltDown)
-}
-length(list2upset)
-names(list2upset)
-
-lapply(list2upset,FUN=length)
-```
-
-```{r upset,fig.height=10,fig.width=10,eval=TRUE}
+# list2upset = NULL
+# for(i in 1:length(masterList)){
+#   name <- names(masterList)[i]
+#   xFiltUp <- list(dplyr::filter(masterList[[i]],FDR<0.05 & logFC>0)$ext_gene)
+#   names(xFiltUp) <- paste0(name,'_Up')
+#   xFiltDown <- list(dplyr::filter(masterList[[i]],FDR<0.05 & logFC<0)$ext_gene)
+#   names(xFiltDown) <- paste0(name,'_Down')
+#   list2upset <- c(list2upset,xFiltUp,xFiltDown)
+# }
+# length(list2upset)
+# names(list2upset)
+# 
+# lapply(list2upset,FUN=length)
 
 
-library(UpSetR)
+# ```{r upset,fig.height=10,fig.width=10,eval=TRUE}
+# 
+# 
+# library(UpSetR)
+# 
+# myOrder=rev(c(
+#   names(list2upset)[grep('Up',names(list2upset))],
+#   names(list2upset)[grep('Down',names(list2upset))]
+# ))
+# 
+# UpSetR::upset(fromList(list2upset),
+#               nsets=length(list2upset),
+#               order.by = 'freq',
+#               decreasing=FALSE,
+#               nintersects = NA,
+#               sets=myOrder,
+#               sets.bar.color='blue',
+#               number.angles = 0,
+#               text.scale = 1,
+#               main.bar.color='darkblue',
+#               keep.order=FALSE
+# )
+# 
+# UpSetR::upset(fromList(list2upset),
+#               nsets=length(list2upset),
+#               order.by = 'degree',
+#               decreasing=FALSE,
+#               nintersects = NA,
+#               sets=myOrder,
+#               sets.bar.color='blue',
+#               number.angles = 0,
+#               text.scale = 1,
+#               main.bar.color='darkblue',
+#               keep.order=TRUE
+# )
+# 
+# ```
 
-myOrder=rev(c(
-  names(list2upset)[grep('Up',names(list2upset))],
-  names(list2upset)[grep('Down',names(list2upset))]
-))
-
-UpSetR::upset(fromList(list2upset),
-              nsets=length(list2upset),
-              order.by = 'freq',
-              decreasing=FALSE,
-              nintersects = NA,
-              sets=myOrder,
-              sets.bar.color='blue',
-              number.angles = 0,
-              text.scale = 1,
-              main.bar.color='darkblue',
-              keep.order=FALSE
-)
-
-UpSetR::upset(fromList(list2upset),
-              nsets=length(list2upset),
-              order.by = 'degree',
-              decreasing=FALSE,
-              nintersects = NA,
-              sets=myOrder,
-              sets.bar.color='blue',
-              number.angles = 0,
-              text.scale = 1,
-              main.bar.color='darkblue',
-              keep.order=TRUE
-)
-
-```
-
-```{r tabListUpset,results='asis',fig.height=11,fig.width=7,eval=TRUE}
-
-
-cat('## Gene Sets {.tabset}\n')
-# UpSetR::upset(fromList(list2upset),nsets=50)
-.intersects = get_intersects(list2upset,numberOfTopSets = 100)
-
-
-# Filter for sets with >n genes
-n=1
-take <- which(as.numeric(unlist(lapply(.intersects,FUN=length)))>n)
-cat("Only showing tabs for intersects with greater than",n,"genes: N =",length(take),"sets\n")
-library(kableExtra)
-tabMyList2table(.intersects[take],'##')
-
-
-
-cat('\n')
-
-```
+# ```{r tabListUpset,results='asis',fig.height=11,fig.width=7,eval=TRUE}
+# 
+# 
+# cat('## Gene Sets {.tabset}\n')
+# # UpSetR::upset(fromList(list2upset),nsets=50)
+# .intersects = get_intersects(list2upset,numberOfTopSets = 100)
+# 
+# 
+# # Filter for sets with >n genes
+# n=1
+# take <- which(as.numeric(unlist(lapply(.intersects,FUN=length)))>n)
+# cat("Only showing tabs for intersects with greater than",n,"genes: N =",length(take),"sets\n")
+# library(kableExtra)
+# tabMyList2table(.intersects[take],'##')
+# 
+# 
+# 
+# cat('\n')
+# 
+# ```
