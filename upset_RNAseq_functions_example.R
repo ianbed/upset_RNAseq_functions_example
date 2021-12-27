@@ -63,7 +63,7 @@ tabMyList=function(listInput,tab){
 
 # just like tab my list except returns a table
 # could make this a toggle in tabMyList ...
-tabMyList2table=function(listInput,tab,table2join=NULL){
+tabMyList2table=function(listInput,tab,table2join=NULL,printTable=TRUE){
   require(dplyr)
   stopifnot(!missing(listInput))
   stopifnot(!missing(tab))
@@ -100,6 +100,10 @@ tabMyList2table=function(listInput,tab,table2join=NULL){
     }else{
       print("No GO Biological Processes Enriched\n")
     }
+    
+    print(cat(paste('\n\n####','ENRICHMENT TABLE','\n')))
+    
+    print(knitr::kable(data.frame(GO.BP)))
     
     cat("\n\n")
   }# Go to next set
