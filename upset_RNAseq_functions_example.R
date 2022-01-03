@@ -73,7 +73,6 @@ tabMyList2table=function(listInput,tab,table2join=NULL,printTable=TRUE){
     l=length(.list[[1]])
     name=gsub("[\r\n]", "",names(.list))
     cat(paste('\n\n###',name,paste0('(N=',l,')')),' {.tabset}\n')
-    cat(paste('\n\n####','TABLE','\n'))
     .dataframe = data.frame(.list)
     colnames(.dataframe)='ext_gene'
     if(!is.null(table2join)){
@@ -84,11 +83,12 @@ tabMyList2table=function(listInput,tab,table2join=NULL,printTable=TRUE){
     print(cat("\n\n"))
     
     
+    
+    
+    #######################
+    # BP enrichment testing
     print(cat("\n\n"))
-    
-    print(cat(paste('\n\n####','ENRICHMENT','\n')))
-    
-    # Do enrichment testing
+    print(cat(paste('\n\n####','BP','\n')))
     GO.BP = enrichGO(gene=.dataframe$ext_gene,
                      OrgDb=config$org.db,
                      ont ="BP",
@@ -100,10 +100,42 @@ tabMyList2table=function(listInput,tab,table2join=NULL,printTable=TRUE){
     }else{
       print("No GO Biological Processes Enriched\n")
     }
-    
-    print(cat(paste('\n\n####','ENRICHMENT TABLE','\n')))
-    
+    print(cat(paste('\n\n####','BP TABLE','\n')))
     print(knitr::kable(data.frame(GO.BP)))
+    #######################
+    # CC enrichment testing
+    print(cat("\n\n"))
+    print(cat(paste('\n\n####','CC','\n')))
+    GO.CC = enrichGO(gene=.dataframe$ext_gene,
+                     OrgDb=config$org.db,
+                     ont ="CC",
+                     keyType = "SYMBOL",
+                     pAdjustMethod = "BH"
+    )
+    if(nrow(GO.CC)>0){
+      print(enrichplot::dotplot(GO.CC, showCategory=30) + ggtitle("DotPlot - GO:Biological Process"))
+    }else{
+      print("No GO Cellular Compartment Enriched\n")
+    }
+    print(cat(paste('\n\n####','CC TABLE','\n')))
+    print(knitr::kable(data.frame(GO.CC)))
+    #######################
+    # MF enrichment testing
+    print(cat("\n\n"))
+    print(cat(paste('\n\n####','CC','\n')))
+    GO.MF = enrichGO(gene=.dataframe$ext_gene,
+                     OrgDb=config$org.db,
+                     ont ="MF",
+                     keyType = "SYMBOL",
+                     pAdjustMethod = "BH"
+    )
+    if(nrow(GO.MF)>0){
+      print(enrichplot::dotplot(GO.MF, showCategory=30) + ggtitle("DotPlot - GO:Biological Process"))
+    }else{
+      print("No GO Molecular Function Enriched\n")
+    }
+    print(cat(paste('\n\n####','MF TABLE','\n')))
+    print(knitr::kable(data.frame(GO.MF)))
     
     cat("\n\n")
   }# Go to next set
